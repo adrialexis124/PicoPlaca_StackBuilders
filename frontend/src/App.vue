@@ -32,6 +32,16 @@ export default {
   },
   methods: {
   async submitForm() {
+
+    if (!this.licensePlate || !this.date || !this.time || this.licensePlate.length !== 8) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Please ensure all fields are complete and the license plate is correctly formatted.',
+            icon: 'error'
+        });
+        return;
+    }
+
     const data = {
       licensePlate: this.licensePlate,
       date: this.date,
