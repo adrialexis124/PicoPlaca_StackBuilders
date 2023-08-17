@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  
     <h1>Pico y Placa Predictor</h1>
     <form @submit.prevent="submitForm">
       <label for="license-plate">License Plate:</label>
@@ -13,11 +13,12 @@
       <br />
       <button type="submit">Predict</button>
     </form>
-  </div>
+  
 </template>
 
 
 <script>
+import Swal from 'sweetalert2';
 import axios from 'axios';
 
 export default {
@@ -39,9 +40,25 @@ export default {
 
     try {
       const response = await axios.post('http://localhost:3000/predict', data);
-      alert(`Prediction result: ${response.data.result}`);
+      
+      let alertIcon = 'success';
+
+      if (response.data.result === 'Car cannot be on the road') {
+          alertIcon = 'error';
+      }
+
+      Swal.fire({
+          title: 'Prediction Result',
+          text: response.data.result,
+          icon: alertIcon
+      });
+
     } catch (error) {
-      alert('An error occurred while predicting.');
+      Swal.fire({
+        title: 'Error',
+        text: 'An error occurred while predicting.',
+        icon: 'error'
+      });
       console.error(error);
     }
   },
@@ -82,12 +99,61 @@ export default {
 
 
 <style>
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #F7F7F7;
+  color: #333333;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
 #app {
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+  border: none;
+}
+
+h1 {
   text-align: center;
-  margin: 40px;
+  margin-bottom: 20px;
 }
+
+button {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: block;
+  margin: 20px auto;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
 input {
-  margin: 10px 0;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s;
 }
+
+input:focus {
+  border-color: #007BFF;
+}
+
 </style>
 
